@@ -36,10 +36,10 @@ object MyModule {
 
 	// Exercise 1: Write a function to compute the nth fibonacci number
 
-  /*
-   * The logic for my implementation is to pass the current value and the starting couple of fibonacci number (i.e.: F0 = 0, F1 = 1)
-   * The exit condition of my recursion is with F2 = F(N-2) + F(N-1) 
-   */
+	/*
+	 * The logic for my implementation is to pass the current value and the starting couple of fibonacci number (i.e.: F0 = 0, F1 = 1)
+	 * The exit condition of my recursion is with F2 = F(N-2) + F(N-1) 
+	 */
 	def fib(n: Int): Int = {
 					@annotation.tailrec
 					def go(current: Int, minusTwo: Int, minusOne: Int): Int = {	   
@@ -156,12 +156,21 @@ object PolymorphicFunctions {
 
 	// Exercise 2: Implement a polymorphic function to check whether
 	// an `Array[A]` is sorted
-	def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = ???
+	def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = {
+			@annotation.tailrec
+			def loop(n: Int, b: Boolean): Boolean = {
+					if(n>=as.length) b
 
-			// Polymorphic functions are often so constrained by their type
-			// that they only have one implementation! Here's an example:
+					else loop(n+1,gt(as(n-1),as(n)) && b)
+			}
 
-			def partial1[A,B,C](a: A, f: (A,B) => C): B => C =
+			loop(1,true)
+	}
+
+	// Polymorphic functions are often so constrained by their type
+	// that they only have one implementation! Here's an example:
+
+	def partial1[A,B,C](a: A, f: (A,B) => C): B => C =
 			(b: B) => f(a, b)
 
 			// Exercise 3: Implement `curry`.
@@ -191,4 +200,20 @@ object PolymorphicFunctions {
 
 							def compose[A,B,C](f: B => C, g: A => B): A => C =
 							???
+}
+
+object PolymorphicTests {
+  import PolymorphicFunctions._
+  
+  def main(args: Array[String]): Unit = {
+    def compareFunction(elem: Int, elem2: Int): Boolean = if(elem<=elem2) true else false
+    
+    val arrayUnsorted = Array(1, 2, 8, 4, 5, 6)
+    
+    println(isSorted(arrayUnsorted, compareFunction))
+    
+    val arraySorted = Array(1, 2, 3, 4, 5, 6)
+    
+    println(isSorted(arraySorted, compareFunction))
+  }
 }
