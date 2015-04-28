@@ -156,11 +156,27 @@ object PolymorphicFunctions {
 
 	// Exercise 2: Implement a polymorphic function to check whether
 	// an `Array[A]` is sorted
+  /*
+   * Actually my solution performs a check on less than, instead of greater than.
+   * More specifically, I use a loop inner function with two parameters:
+   * 
+   * - a counter parameter starting from 1
+   * - a boolean condition holding the and condition of the gt evaluation over all the
+   *    collection passed as input.
+   *    
+   *  For sure, my approach results slower than the one proposed by the authors.
+   *  In fact, their solution exits the recursion as soon as the first false condition
+   *  is met.
+   *  
+   *  In my solution, instead, I have to loop over all the collection.
+   *  
+   *  Please, be aware of that!  
+   * 
+   */
 	def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = {
 			@annotation.tailrec
 			def loop(n: Int, b: Boolean): Boolean = {
 					if(n>=as.length) b
-
 					else loop(n+1,gt(as(n-1),as(n)) && b)
 			}
 
