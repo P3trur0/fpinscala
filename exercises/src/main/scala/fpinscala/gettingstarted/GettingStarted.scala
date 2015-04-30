@@ -191,16 +191,14 @@ object PolymorphicFunctions {
 
 			// Exercise 3: Implement `curry`.
 
-			// Note that `=>` associates to the right, so we could
-			// write the return type as `A => B => C`
-			def curry[A,B,C](f: (A, B) => C): A => (B => C) =
-			???
+	// Note that `=>` associates to the right, so we could
+	// write the return type as `A => B => C`
+	def curry[A,B,C](f: (A, B) => C): A => (B => C) = a => b => f(a,b)
 
-					// NB: The `Function2` trait has a `curried` method already
+	// NB: The `Function2` trait has a `curried` method already
 
-					// Exercise 4: Implement `uncurry`
-					def uncurry[A,B,C](f: A => B => C): (A, B) => C =
-					???
+	// Exercise 4: Implement `uncurry`
+	def uncurry[A,B,C](f: A => B => C): (A, B) => C = (a, b) => f(a)(b)  
 
 							/*
   NB: There is a method on the `Function` object in the standard library,
@@ -212,10 +210,8 @@ object PolymorphicFunctions {
   a term we inherit from category theory.
 							 */
 
-							// Exercise 5: Implement `compose`
-
-							def compose[A,B,C](f: B => C, g: A => B): A => C =
-							???
+	// Exercise 5: Implement `compose`
+	def compose[A,B,C](f: B => C, g: A => B): A => C = a => f(g(a))
 }
 
 object PolymorphicTests {
@@ -224,12 +220,27 @@ object PolymorphicTests {
   def main(args: Array[String]): Unit = {
     def compareFunction(elem: Int, elem2: Int): Boolean = if(elem<=elem2) true else false
     
-    val arrayUnsorted = Array(1, 2, 8, 4, 5, 6)
+    val arrayUnsorted = Array(1, 2, 8, 4, 5, 6)  //array literal
     
     println(isSorted(arrayUnsorted, compareFunction))
     
     val arraySorted = Array(1, 2, 3, 4, 5, 6)
     
     println(isSorted(arraySorted, compareFunction))
+     
+    //curry function
+    def func = curry((a:String, b:String) => a+b)
+    //here is like f(a,b) => c becomes f(a) => g(b) => c
+    println(func("Pippo")(" is my friend"))
+    //here is like f(a) => g(b) => c becomes f(a,b) => c 
+    def funcUncurried = uncurry((a:String) => (b:String) => a + b + "buahbuah")
+    println(funcUncurried("Pippo"," now is uncurried... "))
+    
+    //here comes the composition application
+    def compositionFunc = compose((x:String) => x.reverse, (y:Int) => (y*1000).toString)
+    println(compositionFunc(500))
+    println("000005" == compositionFunc(500).toString)
+    
+    
   }
 }
