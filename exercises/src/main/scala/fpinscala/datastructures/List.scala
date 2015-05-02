@@ -65,11 +65,27 @@ case class Cons[+A](head: A, tail: List[A]) extends List[A]
 	case Cons(_, xs) => Cons(h, xs)
 	}
 
-	def drop[A](l: List[A], n: Int): List[A] = sys.error("todo")
+	//exercise 3.4
+	def drop[A](l: List[A], n: Int): List[A] = {
+			if(n<=0) l    //the check on n MUST be done before the pattern matching
+			l match {
+			case Nil => sys.error("Impossible to remove elements from an empty list")
+			case Cons(x,xs) => drop(xs,n-1) 
+			}
+	}
 
-			def dropWhile[A](l: List[A], f: A => Boolean): List[A] = sys.error("todo")
+	//exercise 3.5
+  /**
+   * Please, refer to the authors' implementation for a better version
+   */
+	def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
+	case Nil => Nil
+	case Cons(x,xs) => if(f(x)) dropWhile(xs, f) else l
+	}
 
-			def init[A](l: List[A]): List[A] = sys.error("todo")
+
+
+	def init[A](l: List[A]): List[A] = sys.error("todo")
 
 			def length[A](l: List[A]): Int = sys.error("todo")
 
@@ -92,5 +108,15 @@ object ListTester {
 		//exercise 3.3
 		println(setHead(originalList,15)toString)
 		println(setHead(Nil,18)toString)
+
+		//exercise 3.4
+		println(drop(originalList,2)toString)
+		println(drop(originalList,0)toString)
+		println(drop(originalList,4)toString)
+		// println(drop(originalList,8)toString)
+
+		//exercise 3.5
+		val evenButOneList = List(4,6,8,1,10)
+		println(dropWhile(evenButOneList,(x:Int) => x % 2 == 0)toString)
 	}
 }
