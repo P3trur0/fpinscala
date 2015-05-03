@@ -40,7 +40,7 @@ case class Cons[+A](head: A, tail: List[A]) extends List[A]
 	def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B = // Utility functions
 			as match {
 			case Nil => z
-			case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+			case Cons(x, xs) => f(x, foldRight(xs, z)(f))  //no tail recursion here!
 	}
 
 	def sum2(ns: List[Int]) =
@@ -55,7 +55,7 @@ case class Cons[+A](head: A, tail: List[A]) extends List[A]
 			 *  if one of the variables is not used in the pattern matching, please use the variable pattern _
 			 */
 			def tail[A](l: List[A]): List[A] = l match {
-			case Nil => sys.error("tail of empty list")  //fix copied from authors solution
+			case Nil         => sys.error("tail of empty list") //fix copied from authors solution
 			case Cons(_, xs) => xs
 	}
 
@@ -68,30 +68,79 @@ case class Cons[+A](head: A, tail: List[A]) extends List[A]
 	//exercise 3.4
 	def drop[A](l: List[A], n: Int): List[A] = {
 			if(n<=0) l    //the check on n MUST be done before the pattern matching
-			l match {
+			else l match {
 			case Nil => sys.error("Impossible to remove elements from an empty list")
 			case Cons(x,xs) => drop(xs,n-1) 
 			}
 	}
 
 	//exercise 3.5
-  /**
-   * Please, refer to the authors' implementation for a better version
-   */
+	/**
+	 * Please, refer to the authors' implementation for a better version
+	 */
 	def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
 	case Nil => Nil
 	case Cons(x,xs) => if(f(x)) dropWhile(xs, f) else l
 	}
 
 
+//My approach was to use a reverse list. In this way no side effects have been introduced
+	def init[A](l: List[A]): List[A] = {
+  //helper function to aggregate the value of the current list in an aggregation one, where the last element is removed.
+			def aggregateFunction(currentList: List[A], aggregateList: List[A]): List[A] = {
+					currentList match {
+            
+					case Nil => aggregateList
 
-	def init[A](l: List[A]): List[A] = sys.error("todo")
+					case Cons(h,t) => {
+						t match {
+						case Nil => aggregateList
+						case Cons(th,tt) => aggregateFunction(t, Cons(h,aggregateList))
+						}
+					}
+					}
+			}
+      //since the removal function returns a list in reversed order...
+		val listWithRemoval = aggregateFunction(l, Nil)
+      
+    //I need to iterate again over the list returned from the aggregate function in order to obtain a proper result.
+     def reverseList(listToReverse:List[A], resultList:List[A]): List[A] = listToReverse match {
+          case Nil => resultList
+          case Cons(h,t) => reverseList(t, Cons(h,resultList))
+       }   
+      
+     reverseList(listWithRemoval, Nil)
+	}
 
-			def length[A](l: List[A]): Int = sys.error("todo")
+	def length[A](l: List[A]): Int = {
+    foldRight(l, 0)((_,y) => y + 1)
+  }
+  
+  @annotation.tailrec
+	def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = {
+    l match {
+      case Nil => z
+      case Cons(x,xs) => foldLeft(xs, f(z,x))(f)
+    } 
+  }
+  
+  def sum3(l:List[Int]): Int = {
+    foldLeft(l, 0)(_ + _)
+  }
+  
+  def product3(l:List[Int]): Double = {
+    foldLeft(l, 1D)(_ * _)
+  }
+  
+  def length2[A](l:List[A]): Double = {
+    foldLeft(l, 0)((accumulator,_) => accumulator + 1)
+  }
+  
+  def reverse[A](l:List[A]): List[A] = {
+    foldLeft(l, Nil:List[A])((x,y) => Cons(y,x))
+  }
 
-			def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = sys.error("todo")
-
-			def map[A,B](l: List[A])(f: A => B): List[B] = sys.error("todo")
+	def map[A,B](l: List[A])(f: A => B): List[B] = sys.error("todo")
 }
 
 object ListTester {
@@ -118,5 +167,25 @@ object ListTester {
 		//exercise 3.5
 		val evenButOneList = List(4,6,8,1,10)
 		println(dropWhile(evenButOneList,(x:Int) => x % 2 == 0)toString)
+
+		//exercise 3.6
+		val listWithLastToRemove = List(1,2,3,4,5,6,7,8)
+		println(init(listWithLastToRemove)toString)
+    
+    //exercise 3.9
+    println(length(listWithLastToRemove))
+    println(length(List()))
+    println(length(List(1)))
+    
+    //exercise 3.10 and 3.11
+    val listToElaborate = List(1,2,3,4)
+    println(sum3(listToElaborate) == 10)
+    println(product3(listToElaborate) == 24)
+    println(length(listToElaborate) == length2(listToElaborate))
+    
+    //exercise 3.12
+    val reverseByFold = List(1,2,3)
+    println(reverse(reverseByFold).toString)
+    
 	}
 }
