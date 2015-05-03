@@ -139,6 +139,13 @@ case class Cons[+A](head: A, tail: List[A]) extends List[A]
   def reverse[A](l:List[A]): List[A] = {
     foldLeft(l, Nil:List[A])((x,y) => Cons(y,x))
   }
+  
+  //Fold left in term of fold right can be implemented through reverse to preserve associativity.
+  /**
+   * Otherwise take a look at this stackoverflow explanation for exercise 3.13
+   * 
+   * http://stackoverflow.com/questions/17136794/foldleft-using-foldright-in-scala
+   */
 
 	def map[A,B](l: List[A])(f: A => B): List[B] = sys.error("todo")
 }
