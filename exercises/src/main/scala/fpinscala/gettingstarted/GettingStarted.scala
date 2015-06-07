@@ -156,23 +156,23 @@ object PolymorphicFunctions {
 
 	// Exercise 2: Implement a polymorphic function to check whether
 	// an `Array[A]` is sorted
-  /*
-   * Actually my solution performs a check on less than, instead of greater than.
-   * More specifically, I use a loop inner function with two parameters:
-   * 
-   * - a counter parameter starting from 1
-   * - a boolean condition holding the and condition of the gt evaluation over all the
-   *    collection passed as input.
-   *    
-   *  For sure, my approach results slower than the one proposed by the authors.
-   *  In fact, their solution exits the recursion as soon as the first false condition
-   *  is met.
-   *  
-   *  In my solution, instead, I have to loop over all the collection.
-   *  
-   *  Please, be aware of that!  
-   * 
-   */
+	/*
+	 * Actually my solution performs a check on less than, instead of greater than.
+	 * More specifically, I use a loop inner function with two parameters:
+	 * 
+	 * - a counter parameter starting from 1
+	 * - a boolean condition holding the and condition of the gt evaluation over all the
+	 *    collection passed as input.
+	 *    
+	 *  For sure, my approach results slower than the one proposed by the authors.
+	 *  In fact, their solution exits the recursion as soon as the first false condition
+	 *  is met.
+	 *  
+	 *  In my solution, instead, I have to loop over all the collection.
+	 *  
+	 *  Please, be aware of that!  
+	 * 
+	 */
 	def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = {
 			@annotation.tailrec
 			def loop(n: Int, b: Boolean): Boolean = {
@@ -191,16 +191,16 @@ object PolymorphicFunctions {
 
 			// Exercise 3: Implement `curry`.
 
-	// Note that `=>` associates to the right, so we could
-	// write the return type as `A => B => C`
-	def curry[A,B,C](f: (A, B) => C): A => (B => C) = a => b => f(a,b)
+			// Note that `=>` associates to the right, so we could
+			// write the return type as `A => B => C`
+			def curry[A,B,C](f: (A, B) => C): A => (B => C) = a => b => f(a,b)
 
-	// NB: The `Function2` trait has a `curried` method already
+			// NB: The `Function2` trait has a `curried` method already
 
-	// Exercise 4: Implement `uncurry`
-	def uncurry[A,B,C](f: A => B => C): (A, B) => C = (a, b) => f(a)(b)  
+			// Exercise 4: Implement `uncurry`
+			def uncurry[A,B,C](f: A => B => C): (A, B) => C = (a, b) => f(a)(b)  
 
-							/*
+			/*
   NB: There is a method on the `Function` object in the standard library,
   `Function.uncurried` that you can use for uncurrying.
 
@@ -208,39 +208,39 @@ object PolymorphicFunctions {
   and uncurry and the two forms are in some sense "the same". In FP jargon,
   we say that they are _isomorphic_ ("iso" = same; "morphe" = shape, form),
   a term we inherit from category theory.
-							 */
+			 */
 
-	// Exercise 5: Implement `compose`
-	def compose[A,B,C](f: B => C, g: A => B): A => C = a => f(g(a))
+			// Exercise 5: Implement `compose`
+			def compose[A,B,C](f: B => C, g: A => B): A => C = a => f(g(a))
 }
 
 object PolymorphicTests {
-  import PolymorphicFunctions._
-  
-  def main(args: Array[String]): Unit = {
-    def compareFunction(elem: Int, elem2: Int): Boolean = if(elem<=elem2) true else false
-    
-    val arrayUnsorted = Array(1, 2, 8, 4, 5, 6)  //array literal
-    
-    println(isSorted(arrayUnsorted, compareFunction))
-    
-    val arraySorted = Array(1, 2, 3, 4, 5, 6)
-    
-    println(isSorted(arraySorted, compareFunction))
-     
-    //curry function
-    def func = curry((a:String, b:String) => a+b)
-    //here is like f(a,b) => c becomes f(a) => g(b) => c
-    println(func("Pippo")(" is my friend"))
-    //here is like f(a) => g(b) => c becomes f(a,b) => c 
-    def funcUncurried = uncurry((a:String) => (b:String) => a + b + "buahbuah")
-    println(funcUncurried("Pippo"," now is uncurried... "))
-    
-    //here comes the composition application
-    def compositionFunc = compose((x:String) => x.reverse, (y:Int) => (y*1000).toString)
-    println(compositionFunc(500))
-    println("000005" == compositionFunc(500).toString)
-    
-    
-  }
+	import PolymorphicFunctions._
+
+	def main(args: Array[String]): Unit = {
+			def compareFunction(elem: Int, elem2: Int): Boolean = if(elem<=elem2) true else false
+
+					val arrayUnsorted = Array(1, 2, 8, 4, 5, 6)  //array literal
+
+					println(isSorted(arrayUnsorted, compareFunction))
+
+					val arraySorted = Array(1, 2, 3, 4, 5, 6)
+
+					println(isSorted(arraySorted, compareFunction))
+
+					//curry function
+					def func = curry((a:String, b:String) => a+b)
+					//here is like f(a,b) => c becomes f(a) => g(b) => c
+					println(func("Pippo")(" is my friend"))
+					//here is like f(a) => g(b) => c becomes f(a,b) => c 
+					def funcUncurried = uncurry((a:String) => (b:String) => a + b + "buahbuah")
+					println(funcUncurried("Pippo"," now is uncurried... "))
+
+					//here comes the composition application
+					def compositionFunc = compose((x:String) => x.reverse, (y:Int) => (y*1000).toString)
+					println(compositionFunc(500))
+					println("000005" == compositionFunc(500).toString)
+
+
+	}
 }
