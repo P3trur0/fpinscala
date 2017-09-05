@@ -86,8 +86,8 @@ object TestFib {
 
 	// test implementation of `fib`
 	def main(args: Array[String]): Unit = {
-			println("Expected: 0, 1, 1, 2, 3, 5, 8, 75025")
-			println("Actual:   %d, %d, %d, %d, %d, %d, %d, %d".format(fib(0), fib(1), fib(2), fib(3), fib(4), fib(5), fib(6), fib(25)))
+		println("Expected: 0, 1, 1, 2, 3, 5, 8, 75025")
+		println("Actual:   %d, %d, %d, %d, %d, %d, %d, %d".format(fib(0), fib(1), fib(2), fib(3), fib(4), fib(5), fib(6), fib(25)))
 	}
 }
 
