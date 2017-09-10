@@ -37,11 +37,11 @@ class ListSpec extends FlatSpec with Matchers {
   }
 
   "Exercise 3.5" should "allow to drop elements of a list while a boolean condition is met" in {
-    List.dropWhile(List(1,2,3,4,5), (x: Int) => x < 4) shouldBe(List(4,5))
+    List.dropWhile(List(1,2,3,4,5))(x => x < 4) shouldBe(List(4,5))
   }
 
   it should "return Nil if the dropWhile method removes all the elements of the list" in {
-    List.dropWhile(List(1,2,3,4,5), (x: Int) => x < 10) shouldBe(Nil)
+    List.dropWhile(List(1,2,3,4,5))(x => x < 10) shouldBe(Nil)
   }
 
 
