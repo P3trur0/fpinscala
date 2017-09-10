@@ -44,4 +44,19 @@ class ListSpec extends FlatSpec with Matchers {
     List.dropWhile(List(1,2,3,4,5), (x: Int) => x < 10) shouldBe(Nil)
   }
 
+
+  "Exercise 3.6" should "return all the list but the last element" in {
+    List.init(List(1,2,3,4,5)) shouldBe(List(1,2,3,4))
+  }
+
+  it should "return Nil if the init method applies on a single element list" in {
+    List.init(List(1)) shouldBe(Nil)
+  }
+
+  it should "throw an exception if the init method applies on an empty list" in {
+    assertThrows[RuntimeException] {
+      List.init(Nil) shouldBe(Nil)
+    }
+  }
+
 }

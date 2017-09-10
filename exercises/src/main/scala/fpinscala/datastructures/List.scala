@@ -81,7 +81,27 @@ object List { // `List` companion object. Contains functions for creating and wo
     }
   }
 
-  def init[A](l: List[A]): List[A] = ???
+  def init[A](l: List[A]): List[A] = {
+    def loop(l: List[A], result: List[A]): List[A] = {
+      l match {
+        case Nil => sys.error("Init of an empty list!")
+        case Cons(h, Nil) => result
+        case Cons(h, Cons(t, Nil)) => Cons(h, result)
+        case Cons(h, t) => loop(t, Cons(h, result))
+      }
+    }
+
+    def reverse(l: List[A], result: List[A]): List[A] = {
+      l match {
+        case Nil => result
+        case Cons(h, Nil) => Cons(h, Nil)
+        case Cons(h, Cons(t, Nil)) => Cons(t, Cons(h, result))
+        case Cons(h, t) => reverse(t, Cons(h, result))
+      }
+    }
+
+    reverse(loop(l, Nil), Nil)
+  }
 
   def length[A](l: List[A]): Int = ???
 
