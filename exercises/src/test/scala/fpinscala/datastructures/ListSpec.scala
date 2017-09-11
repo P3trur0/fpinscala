@@ -90,7 +90,7 @@ class ListSpec extends FlatSpec with Matchers {
 
   "Exercise 3.15" should "return a concat of a list of lists" in {
     List.concat(List(List(1,3,4), List(2,5))) shouldBe List(1,3,4,2,5)
-    List.concatWithAppend(List(List(1,3,4), List(2,5))) shouldBe List(1,3,4,2,5)
+    List.concatWithAppend(List(List(1,3,4), List(2,5))) shouldBe List(1,3,4,2,5) 
   }
 
 }
