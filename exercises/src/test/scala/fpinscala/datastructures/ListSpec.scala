@@ -59,4 +59,38 @@ class ListSpec extends FlatSpec with Matchers {
     }
   }
 
+  "Exercise 3.9" should "return the length of a list" in {
+    List.length(List(1,2,3,4,5)) shouldBe 5
+    List.length(List(2,3,4,5)) shouldBe 4
+    List.length(List(1,2,3)) shouldBe 3
+  }
+
+  it should "return 0 when the list is empty" in {
+    List.length(List()) shouldBe 0
+  }
+
+  "Exercise 3.10" should "return the foldLeft of a list" in {
+    List.foldLeft(List(1,2,3,4,5), 0)(_ + _) shouldBe 15
+  }
+
+  "Exercise 3.11" should "return the list product and sum using the fold left" in {
+    List.sumFoldedLeft(List(1,2,3,4,5)) shouldBe 15
+    List.productFoldedLeft(List(2,4,6,8)) shouldBe 384
+  }
+
+  "Exercise 3.12" should "return the reverse representation of the list" in {
+    List.reverse(List(1,2,3,4,5)) shouldBe List(5,4,3,2,1)
+    List.reverse(List(1)) shouldBe List(1)
+    List.reverse(List()) shouldBe Nil
+  }
+
+  "Exercise 3.14" should "return an appended version of two lists" in {
+    List.appendWithFold(List(1,2), List(3,4,5)) shouldBe List(1,2,3,4,5)
+  }
+
+  "Exercise 3.15" should "return a concat of a list of lists" in {
+    List.concat(List(List(1,3,4), List(2,5))) shouldBe List(1,3,4,2,5)
+    List.concatWithAppend(List(List(1,3,4), List(2,5))) shouldBe List(1,3,4,2,5)
+  }
+
 }
