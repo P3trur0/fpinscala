@@ -90,7 +90,23 @@ class ListSpec extends FlatSpec with Matchers {
 
   "Exercise 3.15" should "return a concat of a list of lists" in {
     List.concat(List(List(1,3,4), List(2,5))) shouldBe List(1,3,4,2,5)
-    List.concatWithAppend(List(List(1,3,4), List(2,5))) shouldBe List(1,3,4,2,5) 
+    List.concatWithAppend(List(List(1,3,4), List(2,5))) shouldBe List(1,3,4,2,5)
+  }
+
+  "Exercise 3.16" should "increase a list of integers by one" in {
+    List.increaseByOne(List(1,2,3,4)) shouldBe List(2,3,4,5)
+  }
+
+  "Exercise 3.17" should "transform a list of Doubles in a list of Strings" in {
+    List.doubleToString(List(1.0,2.0,3.0,4.0)) shouldBe List("1.0","2.0","3.0","4.0")
+  }
+
+  "Exercise 3.18" should "implement a map using fold" in {
+    List.map(List(1.0,2.0,3.0,4.0))(_.toString) shouldBe List("1.0","2.0","3.0","4.0")
+  }
+
+  "Exercise 3.18" should "implement a filter using fold" in {
+    List.filter(List(1.0,2.0,3.0,4.0))(_%2==0) shouldBe List(2.0,4.0)
   }
 
 }
