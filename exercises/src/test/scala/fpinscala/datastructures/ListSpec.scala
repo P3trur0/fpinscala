@@ -125,4 +125,11 @@ class ListSpec extends FlatSpec with Matchers {
   "Excercise 3.23" should "implement a zip with sum for lists of integers" in {
     List.zipLists(List("hello, ","ciao, ", "bonjour, "), List("world!", "mondo!","monde!"))(_ + _) shouldBe List("hello, world!", "ciao, mondo!", "bonjour, monde!")
   }
+
+  "Excerise 3.24" should "check if a list has a specific sub sequence" in {
+    List.hasSubsequence(List(1,2,3,4), List(2,3)) shouldBe true
+    List.hasSubsequence(List(1,2,3,4), List(1,2,3)) shouldBe true
+    List.hasSubsequence(List(1,2,3,4), List(4,3)) shouldBe false
+    List.hasSubsequence(List(1,2,3,4), List(4)) shouldBe true
+  }
 }

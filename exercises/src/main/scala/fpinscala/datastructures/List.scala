@@ -192,4 +192,21 @@ object List { // `List` companion object. Contains functions for creating and wo
   def zipSumIntegerLists(a1: List[Int], a2: List[Int]): List[Int] = {
     zipLists(a1, a2)(_ + _)
   }
+
+  def hasSubsequence[A](a1: List[A], a2: List[A]): Boolean = {
+    @annotation.tailrec
+    def loop(list: List[A], sublist: List[A], result: Boolean): Boolean = {
+        sublist match {
+        case Nil => result
+        case Cons(elem, tail) => list match {
+          case Nil => false
+          case Cons(head, listtail) if (elem == head) => loop(listtail, tail, true)
+          case Cons(head, listtail) => loop(listtail, sublist, false)
+        }
+      }
+    }
+
+    loop(a1, a2, true)
+  }
+
 }
