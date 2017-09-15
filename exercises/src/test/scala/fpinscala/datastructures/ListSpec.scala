@@ -105,8 +105,24 @@ class ListSpec extends FlatSpec with Matchers {
     List.map(List(1.0,2.0,3.0,4.0))(_.toString) shouldBe List("1.0","2.0","3.0","4.0")
   }
 
-  "Exercise 3.18" should "implement a filter using fold" in {
+  "Exercise 3.19" should "implement a filter using fold" in {
     List.filter(List(1.0,2.0,3.0,4.0))(_%2==0) shouldBe List(2.0,4.0)
   }
 
+  "Exercise 3.20" should "implement a flatmap" in {
+    List.flatMap(List(1,2,3))(i => List(i,i)) shouldBe List(1,1,2,2,3,3)
+    List.flatMapWithConcat(List(1,2,3))(i => List(i,i)) shouldBe List(1,1,2,2,3,3)
+  }
+
+  "Exercise 3.21" should "implement a filter using flatMap" in {
+    List.filterWithFlatMap(List(1.0,2.0,3.0,4.0))(_%2==0) shouldBe List(2.0,4.0)
+  }
+
+  "Excercise 3.22" should "implement a zip with sum for lists of integers" in {
+    List.zipSumIntegerLists(List(1,2,3), List(4,5,6)) shouldBe List(5,7,9)
+  }
+
+  "Excercise 3.23" should "implement a zip with sum for lists of integers" in {
+    List.zipLists(List("hello, ","ciao, ", "bonjour, "), List("world!", "mondo!","monde!"))(_ + _) shouldBe List("hello, world!", "ciao, mondo!", "bonjour, monde!")
+  }
 }

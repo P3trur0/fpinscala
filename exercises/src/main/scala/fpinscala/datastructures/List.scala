@@ -152,4 +152,44 @@ object List { // `List` companion object. Contains functions for creating and wo
       else
         b
   }
+
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = {
+    foldRight(as, Nil:List[B])((a,b) => append(f(a),b))
+  }
+
+  def flatMapWithConcat[A,B](l: List[A])(f: A => List[B]): List[B] = {
+    val value = map(l)(f)
+    concat(value)
+  }
+
+  def filterWithFlatMap[A](l: List[A])(f: A => Boolean): List[A] = {
+    def evaluator[A](a: A, f: A => Boolean): List[A] = {
+      if(f(a))
+        Cons(a, Nil)
+      else
+        Nil
+    }
+
+    flatMapWithConcat(l)(a => evaluator(a,f))
+  }
+
+
+  def zipLists[A](a1: List[A], a2: List[A])(f: (A,A) => A): List[A] = {
+    import collection.mutable.ListBuffer
+    val buf: ListBuffer[A] = new ListBuffer
+    @annotation.tailrec
+    def loop(a1: List[A], a2: List[A]): Unit =
+      (a1,a2) match {
+      case (_,Nil) => ()
+      case (Nil,_) => ()
+      case (Cons(h1,t1), Cons(h2,t2)) => buf+=f(h1,h2); loop(t1,t2)
+    }
+
+    loop(a1, a2)
+    List(buf.toList: _*)
+  }
+
+  def zipSumIntegerLists(a1: List[Int], a2: List[Int]): List[Int] = {
+    zipLists(a1, a2)(_ + _)
+  }
 }
