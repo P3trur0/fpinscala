@@ -16,4 +16,8 @@ class OptionSpec extends FlatSpec with Matchers {
     elem.filter(_>100) shouldBe None
   }
 
+  "Exercise 4.2" should "calculate the variance of a sequence" in {
+    Option.variance(List(1.0,2.0,4.0,5.0,7.0,8.0)) shouldBe Some(7.5)
+  }
+
 }
