@@ -2,7 +2,6 @@ package fpinscala.laziness
 
 import Stream._
 
-
 trait Stream[+A] {
 
   def foldRight[B](z: => B)(f: (A, => B) => B): B = // The arrow `=>` in front of the argument type `B` means that the function `f` takes its second argument by name and may choose not to evaluate it.
@@ -30,7 +29,7 @@ trait Stream[+A] {
     this match {
       case Cons(h, t) if (n>1) => cons(h(), t().take(n-1))
       case Cons(h, t) if (n==1) => cons(h(), empty)
-      case _ => this
+      case _ => empty
     }
   }
 
@@ -44,16 +43,44 @@ trait Stream[+A] {
   def takeWhile(p: A => Boolean): Stream[A] = {
     this match {
       case Cons(h, t) if p(h()) => cons(h(), t().takeWhile(p))
-      case _ => this
+      case _ => empty
     }
   }
 
-  def forAll(p: A => Boolean): Boolean = ???
+  def forAll(p: A => Boolean): Boolean = {
+    this.foldRight(true)((a,b) => p(a) && b)
+  }
 
-  def headOption: Option[A] = ???
+  def takeWhileWithFold(p: A => Boolean): Stream[A] = {
+    this.foldRight[Stream[A]](empty)((a,b) => if(p(a)) cons(a, b) else empty)
+  }
+
+  def headOption: Option[A] = {
+    this.foldRight(None: Option[A])((a,b) => Some(a))
+  }
 
   // 5.7 map, filter, append, flatmap using foldRight. Part of the exercise is
   // writing your own function signatures.
+
+  def map[B](f: A => B): Stream[B] = {
+    this.foldRight(empty: Stream[B])((a,b) => cons(f(a),b))
+  }
+
+  def filter(f: A => Boolean): Stream[A] = {
+    foldRight(empty[A]) {
+      ((a,b) => if(f(a)) cons(a, b) else b)
+    }
+  }
+
+  def append[B >: A](stream2: => Stream[B]): Stream[B] = {
+    foldRight(stream2)((a,b) => cons(a, b))
+  }
+
+  def flatMap[B](f: A => Stream[B]): Stream[B] = {
+    this.foldRight(empty: Stream[B])((a,b) => f(a).foldRight(b)((x,b) => cons(x, b)))
+  }
+
+
 
   def startsWith[B](s: Stream[B]): Boolean = ???
 }
