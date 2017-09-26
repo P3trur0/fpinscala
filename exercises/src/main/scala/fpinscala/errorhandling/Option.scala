@@ -67,9 +67,32 @@ object Option {
     mean(xs) flatMap( m => mean(xs.map(x => math.pow(x - m, 2))))
   }
 
-  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = ???
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = a.flatMap(elemA => b.map(elemB => f(elemA, elemB)))
 
-  def sequence[A](a: List[Option[A]]): Option[List[A]] = ???
+  def map2WithFor[A,B,C](a: Option[A], b: Option[B])(f: (A,B) => C): Option[C] = {
+    for {
+      elemA <- a
+      elemB <- b
+    } yield f(elemA,elemB)
+  }
 
-  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = ???
+  def sequence[A](a: List[Option[A]]): Option[List[A]] = {
+    a.foldRight[Option[List[A]]](Some(Nil))((a,b)=>map2(a,b)(_::_))
+  }
+
+
+  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
+    a.foldRight[Option[List[B]]](Some(Nil))((a,b) => map2(f(a),b)(_::_))
+
+  def Try[A](a: => A): Option[A] = {
+    try {
+      Some(a)
+    } catch {
+      case e: Exception => None
+    }
+  }
+
+  def sequence_traverse[A](a: List[Option[A]]): Option[List[A]] = {
+    traverse(a)(x => x)
+  }
 }
