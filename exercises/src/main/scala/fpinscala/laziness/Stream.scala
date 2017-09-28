@@ -101,7 +101,38 @@ object Stream {
     else cons(as.head, apply(as.tail: _*))
 
   val ones: Stream[Int] = Stream.cons(1, ones)
-  def from(n: Int): Stream[Int] = ???
 
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = ???
+  def constant(n: Int): Stream[Int] = {
+    Stream.cons(n, constant(n))
+  }
+
+  def constantBetterPerformance(n: Int): Stream[Int] = {
+    lazy val tail: Stream[Int] = Cons(() => n, () => tail)
+    tail
+  }
+
+  def from(n: Int): Stream[Int] = {
+    Stream.cons(n, from(n+1))
+  }
+
+  def fibs: Stream[Int] = {
+    def loop(f0: Int, f1: Int): Stream[Int] = {
+      cons(f0, loop(f1, f0+f1))
+    }
+    loop(0,1)
+  }
+
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
+    f(z) match {
+      case None => empty
+      case Some((a, s)) => cons(a, unfold(s)(f))
+    }
+  }
+
+  def onesUnfold: Stream[Int] = unfold(1)(one => Some(one,one))
+  def constantUnfold(n: Int): Stream[Int] = unfold(n)(constant => Some(constant,constant))
+  def fromUnfold(n: Int): Stream[Int] = unfold(n)(from => Some(from,from+1))
+  def fibsUnfold: Stream[Int] = {
+    cons(0, unfold((0,1))(couple => Some((couple._2, (couple._2, couple._1+couple._2)))))
+  }
 }

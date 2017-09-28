@@ -58,4 +58,23 @@ class StreamSpec extends FlatSpec with Matchers {
     Stream(1,2,3,4).filter(_%2==0).toList shouldBe List(2,4)
   }
 
+  "Exercise 5.8" should "implement a constant infinite stream" in {
+    Stream.constant(3).take(4).toList shouldBe List(3,3,3,3)
+  }
+
+  "Exercise 5.9" should "implement a from infinite stream" in {
+    Stream.from(3).take(4).toList shouldBe List(3,4,5,6)
+  }
+
+  "Exercise 5.10" should "implement an infinite Fibonacci calculator" in {
+    Stream.fibs.take(6).toList shouldBe List(0,1,1,2,3,5)
+  }
+
+  "Exercise 5.12" should "implement previous functions with unfold" in {
+    Stream.constantUnfold(3).take(4).toList shouldBe List(3,3,3,3)
+    Stream.fromUnfold(3).take(4).toList shouldBe List(3,4,5,6)
+    Stream.onesUnfold.take(4).toList shouldBe List(1,1,1,1)
+    Stream.fibsUnfold.take(6).toList shouldBe List(0,1,1,2,3,5)
+  }
+
 }
