@@ -92,6 +92,22 @@ trait Stream[+A] {
     }
   }
 
+  def zipWith[B,C](s: Stream[B])(f: (A,B) => C): Stream[C] = {
+    unfold((this,s)) {
+      case(Cons(a,b), Cons(c,d)) => Some((f(a(),c()),(b(),d())))
+      case _ => None
+    }
+  }
+
+  def zipAll[B](s: Stream[B]): Stream[(Option[A], Option[B])] = {
+    unfold((this,s)) {
+      case (Empty, Empty) => None
+      case (Empty, Cons(a,b)) => Some((None,Some(a())),(Empty,b()))
+      case (Cons(a,b), Empty) => Some((Some(a()), None),(b(),Empty))
+      case (Cons(a,b), Cons(c,d)) => Some(((Some(a()),Some(c())),(b(),d())))
+    }
+  }
+
   def takeWhileWithUnfold(f: A => Boolean): Stream[A] = {
     unfold(this) {
       case Cons(a, b) if (f(a())) => Some((a(), b()))
