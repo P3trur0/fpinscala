@@ -86,15 +86,15 @@ trait Stream[+A] {
   }
 
   def takeWithUnfold(n: Int): Stream[A] = {
-    unfold(this) {
-      case Cons(a, b) if (n >= 1) => Some((a(), b().takeWithUnfold(n - 1)))
+    unfold((this,n)) {
+      case (Cons(h,t), n) if n >= 1 => Some((h(), (t(), n-1)))
       case _ => None
     }
   }
 
   def takeWhileWithUnfold(f: A => Boolean): Stream[A] = {
     unfold(this) {
-      case Cons(a, b) if (f(a())) => Some((a(), b().takeWhileWithUnfold(f)))
+      case Cons(a, b) if (f(a())) => Some((a(), b()))
       case _ => None
     }
   }
