@@ -80,7 +80,31 @@ trait Stream[+A] {
     this.foldRight(empty: Stream[B])((a,b) => f(a).foldRight(b)((x,b) => cons(x, b)))
   }
 
+  def mapWithUnfold[B](f: A => B): Stream[B] = unfold(this){
+      case Cons(a, b) => Some((f(a()),b()))
+      case Empty => None
+  }
 
+  def takeWithUnfold(n: Int): Stream[A] = {
+    unfold(this) {
+      case Cons(a, b) if (n >= 1) => Some((a(), b().takeWithUnfold(n - 1)))
+      case _ => None
+    }
+  }
+
+  def takeWhileWithUnfold(f: A => Boolean): Stream[A] = {
+    unfold(this) {
+      case Cons(a, b) if (f(a())) => Some((a(), b().takeWhileWithUnfold(f)))
+      case _ => None
+    }
+  }
+
+// def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
+//    f(z) match {
+//      case None => empty
+//      case Some((a, s)) => cons(a, unfold(s)(f))
+//    }
+//  }
 
   def startsWith[B](s: Stream[B]): Boolean = ???
 }
@@ -133,6 +157,8 @@ object Stream {
   def constantUnfold(n: Int): Stream[Int] = unfold(n)(constant => Some(constant,constant))
   def fromUnfold(n: Int): Stream[Int] = unfold(n)(from => Some(from,from+1))
   def fibsUnfold: Stream[Int] = {
-    cons(0, unfold((0,1))(couple => Some((couple._2, (couple._2, couple._1+couple._2)))))
+    unfold((0,1)){ case (f0, f1) => Some((f0, (f1, f0+f1))) }
   }
+
+
 }

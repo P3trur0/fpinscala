@@ -77,4 +77,11 @@ class StreamSpec extends FlatSpec with Matchers {
     Stream.fibsUnfold.take(6).toList shouldBe List(0,1,1,2,3,5)
   }
 
+  "Exercise 5.13" should "implement map, take, takeWhile, zipWith and zipAll using fold" in {
+    Stream(1,2,3,4).mapWithUnfold(elem => elem*2).toList shouldBe List(2,4,6,8)
+    Stream(1, 2, 3, 4, 5, 6).takeWithUnfold(3).toList shouldBe List(1, 2, 3)
+    Stream(1, 2, 3, 4, 5, 6).takeWhileWithUnfold(_<=3).toList shouldBe Stream(1, 2, 3).toList
+    Stream(1, 2, 3, 4, 5, 6).takeWhileWithUnfold(_>0).toList shouldBe Stream(1, 2, 3, 4, 5, 6).toList
+  }
+
 }
