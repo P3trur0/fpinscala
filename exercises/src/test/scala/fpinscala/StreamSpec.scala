@@ -86,4 +86,24 @@ class StreamSpec extends FlatSpec with Matchers {
     Stream(1, 2, 3, 4, 5, 6).takeWhileWithUnfold(_>0).toList shouldBe Stream(1, 2, 3, 4, 5, 6).toList
   }
 
+  "Exercise 5.14" should "implement startsWith" in {
+    Stream(1, 2, 3, 4, 5, 6).startsWith(Stream(1,2,3)) shouldBe true
+    Stream(1, 2, 3, 4, 5, 6).startsWith(Stream(4,5,6)) shouldBe false
+  }
+
+  "Exercise 5.15" should "implement tails" in {
+    val result = Stream(1,2,3).tails.toList
+    result(0).toList shouldBe Stream(1,2,3).toList
+    result(1).toList shouldBe Stream(2,3).toList
+    result(2).toList shouldBe Stream(3).toList
+    result(3).toList shouldBe Stream().toList
+  }
+
+  "Has sequence in lazy fashion" should "implement an has sequence operation" in {
+    Stream(1, 2, 3, 4, 5, 6).hasSubsequence(Stream(1,2,3,4)) shouldBe true
+    Stream(1, 2, 3, 4, 5, 6).hasSubsequence(Stream(2,3,4)) shouldBe true
+    Stream(1, 2, 3, 4, 5, 6).hasSubsequence(Stream(3,4)) shouldBe true
+    Stream(1, 2, 3, 4, 5, 6).hasSubsequence(Stream(1,4,3)) shouldBe false
+  }
+
 }

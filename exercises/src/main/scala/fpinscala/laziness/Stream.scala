@@ -115,14 +115,23 @@ trait Stream[+A] {
     }
   }
 
-// def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
-//    f(z) match {
-//      case None => empty
-//      case Some((a, s)) => cons(a, unfold(s)(f))
-//    }
-//  }
+  def startsWith[B](s: Stream[B]): Boolean = {
+    zipAll(s).takeWhile(!_._2.isEmpty) forAll {
+      case (h,h2) => h == h2
+    }
+  }//
 
-  def startsWith[B](s: Stream[B]): Boolean = ???
+  def tails: Stream[Stream[A]] = {
+    Stream.unfold(this) {
+      case Empty => None
+      case Cons(a,b) => Some((Cons(a,b), b()))
+    } append Stream(empty)
+  }
+
+  def hasSubsequence[B](s2: Stream[B]): Boolean = {
+    this.tails exists (_ startsWith s2)
+  }
+
 }
 case object Empty extends Stream[Nothing]
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
