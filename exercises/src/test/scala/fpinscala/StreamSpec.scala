@@ -106,4 +106,12 @@ class StreamSpec extends FlatSpec with Matchers {
     Stream(1, 2, 3, 4, 5, 6).hasSubsequence(Stream(1,4,3)) shouldBe false
   }
 
+  "Exercise 5.16" should "implement scanRight" in {
+    Stream(1, 2, 3).scanRight(0)(_+_).toList shouldBe List(6,5,3,0)
+  }
+
+  "My scanright version " should "be worse than the author's one" in {
+    Stream(1, 2, 3).scanRightMyVersion(0)(_ + _).toList shouldBe List(6,5,3,0)
+  }
+
 }
