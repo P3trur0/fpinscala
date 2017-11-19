@@ -1,8 +1,6 @@
-package fpinscala
-
+package fpinscala.laziness
 
 import org.scalatest.{FlatSpec, Matchers}
-import fpinscala.laziness.{Empty, Stream}
 
 /**
   * Created by P3trur0 (https://flatmap.it) on 25/09/17.
