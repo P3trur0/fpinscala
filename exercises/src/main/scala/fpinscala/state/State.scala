@@ -122,20 +122,13 @@ object RNG {
     })
 
 
-  def flatMap[A,B](f: Rand[A])(g: A => Rand[B]): Rand[B] = {
-    rng => {
-      val (a, rng2) = f(rng)
-      g(a)(rng2)
-    }
-  }
-
   def mapWithFlatMap[A,B](f: Rand[A])(g: A => B): Rand[B] = {
-    flatMap(f)(a => unit(g(a)))
+    RNG.flatMap(f)(a => unit(g(a)))
   }
 
   def mapWithFlatMap2[A,B,C](r1: Rand[A], r2: Rand[B])(g: (A, B) => C): Rand[C] = {
     //flatMap(r1)(a => unit(g(a, flatMap(r2)(b => unit(unit(b))))))
-    flatMap(r1)(a => map(r2)(b => g(a,b)))
+    RNG.flatMap(r1)(a => map(r2)(b => g(a,b)))
   }
 }
 
@@ -175,10 +168,11 @@ object State {
   def get[S]: State[S, S] = State(s => (s, s))
   def set[S](s: S): State[S, Unit] = State(_ => ((), s))
 
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = {
-
-   
-
+  def modify[S](f: S => S): State[S, Unit] = {
+    for {
+      s <- get
+      _ <- set(f(s))
+    } yield ()
   }
 
   def unit[S, A](a: A): State[S, A] = State(s => (a,s))
@@ -186,4 +180,36 @@ object State {
   def sequence[S, A](fs: List[State[S,A]]): State[S, List[A]] = {
     fs.foldRight[State[S, List[A]]](State.unit(Nil))((elem, acc) => elem.map2(acc)((a,b)=>a::b))
   }
+}
+
+object StateChange {
+  def update(i: Input)(s: Machine) = {
+    (i,s) match {
+      case (_, Machine(_,0,_)) => s
+      case (Coin, Machine(false,_,_)) => s
+      case (Turn, Machine(true,_,_)) => s
+      case (Coin, Machine(true,candies,coins)) => Machine(false,candies,coins+1)
+      case (Turn, Machine(false,candies,coins)) => Machine(true,candies-1,coins)
+    }
+  }
+
+  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = {
+    import State._
+    val list: State[Machine, List[Unit]] = sequence(inputs.map(input => modify(update(input))))
+   list.flatMap((_: List[Unit]) =>
+      State(
+        s => {
+          val getState: State[Machine, Machine] = get
+          val (currentMachine, newState) = getState.run(s)
+          ((currentMachine.coins, currentMachine.candies), newState)
+        }
+      )
+    )
+
+    for {
+      _ <- list
+      s <- get
+    } yield(s.coins, s.candies)
+  }
+
 }

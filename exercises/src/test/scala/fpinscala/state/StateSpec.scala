@@ -67,13 +67,11 @@ class StateSpec extends FlatSpec with Matchers {
   }
 
   "Exercise 6.11" should "implement a vendor machine" in {
-
     val machine = Machine(locked  = true, candies = 5, coins = 10)
-    val input = List(Coin, Coin, Coin, Coin)
-
-    State.set(machine)
-    val result = State.simulateMachine(input)
-    val ((coins, candies), _) = result.run(State.get)
+    val input = List(Coin, Turn, Coin, Turn, Coin, Turn, Coin, Turn)
+    val result = StateChange.simulateMachine(input)
+    val tuple: ((Int, Int), Machine) = result.run(machine)
+    val ((coins, candies), _) = tuple
 
     coins shouldBe 14
     candies shouldBe 1
